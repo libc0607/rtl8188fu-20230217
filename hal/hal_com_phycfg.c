@@ -2413,7 +2413,9 @@ bool phy_chk_ch_setting_consistency(_adapter *adapter, u8 ch)
 			rtw_warn_on(1);
 			goto exit;
 		}
-		if (hal_data->current_channel_bw > CHANNEL_WIDTH_40) {
+		if (hal_data->current_channel_bw > CHANNEL_WIDTH_40 
+		&& hal_data->current_channel_bw < CHANNEL_WIDTH_5
+		&& hal_data->current_channel_bw > CHANNEL_WIDTH_10) {
 			rtw_warn_on(1);
 			goto exit;
 		}

@@ -1116,9 +1116,53 @@ phy_PostSetBwMode8188F(
 	u8			SubChnlNum = 0;
 	HAL_DATA_TYPE	*pHalData = GET_HAL_DATA(Adapter);
 
-	/* RTW_INFO("===>%s: current_channel_bw = %s Mhz\n", __func__, pHalData->current_channel_bw?"40":"20"); */
+	//RTW_INFO("===>%s: pHalData->current_channel_bw = %d\n", __func__, pHalData->current_channel_bw); 
 
 	switch (pHalData->current_channel_bw) {
+	case CHANNEL_WIDTH_5:
+		/*
+		0x800[0]=1'b0
+		0x900[0]=1'b0
+		0x800[10:8]=3'b101(20M?)
+		0x800[14:12]=3'b011(20M?)
+		0xCE4[31:30]=2'b01
+		0xCE4[29:28]=2'b01
+		0xc10[29:28]=1
+		0x954[19]=1'b0
+		0x954[23:20]=3
+		*/
+		phy_set_bb_reg(Adapter, rFPGA0_RFMOD, BIT0, 0x0);
+		phy_set_bb_reg(Adapter, rFPGA1_RFMOD, BIT0, 0x0);
+		phy_set_bb_reg(Adapter, rFPGA0_RFMOD, BIT10 | BIT9 | BIT8, 0x5); /* RXADC CLK */
+		phy_set_bb_reg(Adapter, rFPGA0_RFMOD, BIT14 | BIT13 | BIT12, 0x3); /* TXDAC CLK */
+		phy_set_bb_reg(Adapter, rOFDM0_TxPseudoNoiseWgt, BIT31 | BIT30, 0x1); /* small BW */
+		phy_set_bb_reg(Adapter, rOFDM0_TxPseudoNoiseWgt, BIT29 | BIT28, 0x1); /* adc buffer clk(TBD) */
+		phy_set_bb_reg(Adapter, rOFDM0_XARxAFE, BIT29 | BIT28, 0x1); /* adc buffer clk(TBD) */
+		phy_set_bb_reg(Adapter, BBrx_DFIR, BIT19, 0x0); /* OFDM RX DFIR */
+		phy_set_bb_reg(Adapter, BBrx_DFIR, BIT23 | BIT22 | BIT21 | BIT20, 0x3);	/* OFDM RX DFIR */
+		break;
+	case CHANNEL_WIDTH_10:
+		/*
+		0x800[0]=1'b0
+		0x900[0]=1'b0
+		0x800[10:8]=3'b110(40M?)
+		0x800[14:12]=3'b100(40M?)
+		0xCE4[31:30]=2'b10
+		0xCE4[29:28]=2'b01
+		0xc10[29:28]=1
+		0x954[19]=1'b0
+		0x954[23:20]=3
+		*/
+		phy_set_bb_reg(Adapter, rFPGA0_RFMOD, BIT0, 0x0);
+		phy_set_bb_reg(Adapter, rFPGA1_RFMOD, BIT0, 0x0);
+		phy_set_bb_reg(Adapter, rFPGA0_RFMOD, BIT10 | BIT9 | BIT8, 0x6); /* RXADC CLK */
+		phy_set_bb_reg(Adapter, rFPGA0_RFMOD, BIT14 | BIT13 | BIT12, 0x4); /* TXDAC CLK */
+		phy_set_bb_reg(Adapter, rOFDM0_TxPseudoNoiseWgt, BIT31 | BIT30, 0x2); /* small BW */
+		phy_set_bb_reg(Adapter, rOFDM0_TxPseudoNoiseWgt, BIT29 | BIT28, 0x1); /* adc buffer clk(TBD) */
+		phy_set_bb_reg(Adapter, rOFDM0_XARxAFE, BIT29 | BIT28, 0x1); /* adc buffer clk(TBD) */
+		phy_set_bb_reg(Adapter, BBrx_DFIR, BIT19, 0x0); /* OFDM RX DFIR */
+		phy_set_bb_reg(Adapter, BBrx_DFIR, BIT23 | BIT22 | BIT21 | BIT20, 0x3);	/* OFDM RX DFIR */
+		break;
 	case CHANNEL_WIDTH_20:
 		/*
 		0x800[0]=1'b0

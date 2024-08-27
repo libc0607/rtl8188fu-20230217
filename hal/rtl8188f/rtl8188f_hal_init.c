@@ -4154,7 +4154,36 @@ static void rtl8188f_fill_default_txdesc(
 	pattrib = &pxmitframe->attrib;
 	bmcst = IS_MCAST(pattrib->ra);
 
-	if (pxmitframe->frame_tag == DATA_FRAMETAG) {
+	if (pattrib->inject == 0xa5) {
+		/* Prevent sequence number from being overwritten */
+		SET_TX_DESC_HWSEQ_EN_8188F(pbuf, 0); /* Hw do not set sequence number */
+		SET_TX_DESC_SEQ_8188F(pbuf, pattrib->seqnum); /* Copy inject sequence number to TxDesc */
+
+		SET_TX_DESC_RETRY_LIMIT_ENABLE_8188F(pbuf, 1);
+
+		if (pattrib->retry_ctrl == _TRUE) {
+			SET_TX_DESC_DATA_RETRY_LIMIT_8188F(pbuf, 6); // todo: idk if it's the correct api
+		} else {
+			SET_TX_DESC_DATA_RETRY_LIMIT_8188F(pbuf, 0);
+		}
+		if (pattrib->sgi == _TRUE) {
+			SET_TX_DESC_DATA_SHORT_8188F(pbuf, 1);
+		} else {
+			SET_TX_DESC_DATA_SHORT_8188F(pbuf, 0);
+		}
+
+		SET_TX_DESC_DISABLE_FB_8188F(pbuf, 1);   
+		SET_TX_DESC_DISABLE_RTS_FB_8188F(pbuf, 1);	  
+		SET_TX_DESC_USE_RATE_8188F(pbuf, 1);
+		SET_TX_DESC_TX_RATE_8188F(pbuf, MRateToHwRate(pattrib->rate));
+
+		if (pattrib->ldpc) {
+			SET_TX_DESC_DATA_LDPC_8188F(pbuf, 1);
+		}
+		SET_TX_DESC_DATA_STBC_8188F(pbuf, pattrib->stbc & 3);
+		SET_TX_DESC_DATA_BW_8188F(pbuf, pattrib->bwmode); // 0 - 20 MHz, 1 - 40 MHz
+
+	} else if (pxmitframe->frame_tag == DATA_FRAMETAG) {
 		u8 drv_userate = 0;
 
 		SET_TX_DESC_MACID_8188F(pbuf, pattrib->mac_id);
@@ -4349,7 +4378,7 @@ static void rtl8188f_fill_default_txdesc(
 	/* (2) Enable HW SEQ control for beacon packet, because we use Hw beacon. */
 	/* (3) Use HW Qos SEQ to control the seq num of Ext port non-Qos packets. */
 	/* 2010.06.23. Added by tynli. */
-	if (!pattrib->qos_en)
+	if (!pattrib->qos_en && pattrib->inject != 0xa5)
 		SET_TX_DESC_HWSEQ_EN_8188F(pbuf, 1);
 
 #ifdef CONFIG_ANTENNA_DIVERSITY
