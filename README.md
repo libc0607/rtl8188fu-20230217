@@ -4,6 +4,8 @@ RTL8188FU/RTL8188FTV driver for FPV.
 ~~For archive only.~~  
 ~~No plan for FPV, as RTL873xBU is a better low-end choice.~~   
 
+Download pre-built OpenIPC firmware with this driver integrated [here](https://github.com/libc0607/openipc-firmware/releases/tag/latest) to help test.  
+
 Original driver: [RTL8188FU_Linux_v5.15.3-6-g1a2e952f9.20230217.tar](https://github.com/libc0607/rtl8188fu-20230217/blob/main/RTL8188FU_Linux_v5.15.3-6-g1a2e952f9.20230217.tar)  
 
 Please do not choose this adapter for FPV unless you have less than a $0.5 budget. (  
