@@ -8,6 +8,10 @@ Download pre-built OpenIPC firmware with this driver integrated [here](https://g
 
 Original driver: [RTL8188FU_Linux_v5.15.3-6-g1a2e952f9.20230217.tar](https://github.com/libc0607/rtl8188fu-20230217/blob/main/RTL8188FU_Linux_v5.15.3-6-g1a2e952f9.20230217.tar)  
 
+Schematic: [SCH-UM88F02-7V0.pdf](https://github.com/libc0607/rtl8188fu-20230217/blob/main/SCH-UM88F02-7V0.pdf)  
+PCB (Open it with PADS): [PCB-UM88F02-7V0.pcb](https://github.com/libc0607/rtl8188fu-20230217/blob/main/PCB-UM88F02-7V0.pcb)  
+*** All collected from the Internet. Use it at your own risk & contact me to delete if you mind. ***  
+
 Please do not choose this adapter for FPV unless you have less than a $0.5 budget. (  
 
 Tested:
